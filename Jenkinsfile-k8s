@@ -7,7 +7,7 @@ pipeline {
     label "jenkins-nodejs"
   }
   stages {
-    sage('Push Image') {
+    stage('Build And Push Image') {
       when {
         allOf {
           branch 'master'
