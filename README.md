@@ -1,6 +1,6 @@
-# redis-backup-gcs
+# redis-backup-gcs-restore
 
-Create a backup of a specified redis db to Google Cloud Storage
+Restore redis from a backup in Google Cloud Storage
 
 ## Configuration
 
