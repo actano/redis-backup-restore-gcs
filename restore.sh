@@ -21,8 +21,8 @@ if [ -z $NAMESPACE ]; then
     exit 1
 fi
 
-echo "Activating google credentials before beginning"
-gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+#echo "Activating google credentials before beginning"
+#gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 
 if [ $? -ne 0 ] ; then
     echo "Credentials failed; no way to copy to google."
