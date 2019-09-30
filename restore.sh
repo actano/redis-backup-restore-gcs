@@ -21,8 +21,9 @@ if [ -z $NAMESPACE ]; then
     exit 1
 fi
 
-#echo "Activating google credentials before beginning"
-#gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
+
+echo "Activating google credentials before beginning"
+gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 
 if [ $? -ne 0 ] ; then
     echo "Credentials failed; no way to copy to google."
@@ -34,19 +35,19 @@ echo "Beginning restore from $GCS_BUCKET_REDIS/$BACKUP_FULL_NAME.rdb.tar.gz to t
 echo "============================================================"
 
 echo "Fetch dump from google"
-mkdir -p ./restore
+mkdir -p /restore
 gsutil cp "$GCS_BUCKET_REDIS/$BACKUP_FULL_NAME.rdb.tar.gz" "./restore/dump.tar.gz"
 
 echo "Unpacking tar file"
-cd ./restore
+cd /restore
 tar -xzf ./dump.tar.gz
 
 echo "Renaming ./backup/${BACKUP_FULL_NAME} to dump.rdb"
 cp ./backup/${BACKUP_FULL_NAME}.rdb ./dump.rdb
 
-echo "================= Copying Backup to Pod ===================="
+echo "================= Copying Backup to Volume ================="
 echo "Coping /restore/dump.tar.gz to $POD_NAME:/data in $NAMESPACE"
 echo "============================================================"
-kubectl -n $NAMESPACE cp ./dump.tar.gz $POD_NAME:/data
-cd ../
+rm -rf /volume/data/dump.rdb
+cp /restore/dump.rdb /volume/data/dump.rdb
 exit $?
