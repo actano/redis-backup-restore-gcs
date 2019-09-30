@@ -11,17 +11,6 @@ if [ -z $BACKUP_FULL_NAME ]; then
     exit 1
 fi
 
-if [ -z $POD_NAME ]; then
-    echo "You must specify a redis pod name to uplod the backup to"
-    exit 1
-fi
-
-if [ -z $NAMESPACE ]; then
-    echo "You must specify a namespace"
-    exit 1
-fi
-
-
 echo "Activating google credentials before beginning"
 gcloud auth activate-service-account --key-file "$GOOGLE_APPLICATION_CREDENTIALS"
 
@@ -36,17 +25,17 @@ echo "============================================================"
 
 echo "Fetch dump from google"
 mkdir -p /restore
-gsutil cp "$GCS_BUCKET_REDIS/$BACKUP_FULL_NAME.rdb.tar.gz" "./restore/dump.tar.gz"
+gsutil cp "$GCS_BUCKET_REDIS/$BACKUP_FULL_NAME.rdb.tar.gz" "/restore/dump.tar.gz"
 
 echo "Unpacking tar file"
 cd /restore
 tar -xzf ./dump.tar.gz
 
-echo "Renaming ./backup/${BACKUP_FULL_NAME} to dump.rdb"
+echo "Renaming /backup/${BACKUP_FULL_NAME} to dump.rdb"
 cp ./backup/${BACKUP_FULL_NAME}.rdb ./dump.rdb
 
 echo "================= Copying Backup to Volume ================="
-echo "Coping /restore/dump.tar.gz to $POD_NAME:/data in $NAMESPACE"
+echo "Coping /restore/dump.tar.gz to /volume/data/dump.rdb"
 echo "============================================================"
 rm -rf /volume/data/dump.rdb
 cp /restore/dump.rdb /volume/data/dump.rdb
